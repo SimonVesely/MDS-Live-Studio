@@ -1,1 +1,3 @@
 .DS_Store
+nodejs-backend/.env
+nodejs-backend/node_modules
