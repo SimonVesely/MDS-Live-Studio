@@ -30,7 +30,7 @@ Vzdálení řečníci posílají obraz a zvuk šifrovaně přes **SRT**. Centrá
 
 ---
 
-## 🏗 Architektura
+## Architektura
 
 ### Celkový pohled
 
@@ -268,8 +268,8 @@ stateDiagram-v2
 
 ## Tým a rozdělení práce
 
-| Člen | Role | Hlavní části |
-|---|---|---|
-| Simon Veselý (vedoucí) | | |
-| Jan Ručka | | |
-| David Osička | | |
+| Člen | Hlavní části |
+|---|---|
+| Simon Veselý (vedoucí) | Nginx |
+| Jan Ručka | OBS |
+| David Osička | Node Web |
