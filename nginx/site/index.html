@@ -1,14 +1,52 @@
-<html>
-
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MDS Live</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/video.js@8.10.0/dist/video-js.min.css">
+  <style>
+    body { margin: 0; background: #111; color: #eee; font-family: sans-serif; text-align: center }
+    .box { max-width: 960px; margin: 20px auto; padding: 0 10px }
+  </style>
+</head>
 <body>
-    <marquee style="background-color: blueviolet; font-size: 14pt; color: white; padding: 14pt; margin-bottom: 20px;"
-        behavior="alternate" truespeed="6">
-        Krasa strida nadheru.
-    </marquee>
+  <div class="box">
+    <h1>MDS Live</h1>
+    <p id="wait">⏳ Čekáme na zahájení vysílání…</p>
+    <div id="stage" hidden>
+      <video id="v" class="video-js vjs-fluid" controls muted autoplay playsinline></video>
+      <p>Kvalita:
+        <select id="q">
+          <option value="0">Auto</option><option>1080</option><option>720</option><option>480</option>
+        </select>
+      </p>
+    </div>
+  </div>
 
-    <center>
-        <a href="/recordings" style="border: 1px solid aqua; background-color: brown; padding: 10px;">NAHRAVKY</a>
-    </center>
+  <script src="https://cdn.jsdelivr.net/npm/video.js@8.10.0/dist/video.min.js"></script>
+  <script>
+    const SRC = '/hls/live.m3u8';
+    const player = videojs('v');
+    let playing = false;
+
+    // Každé 3 s: existuje playlist? => vysílá se
+    setInterval(async () => {
+      const live = (await fetch(SRC, { method: 'HEAD', cache: 'no-store' }).catch(() => ({}))).ok;
+      if (live && !playing) player.src({ src: SRC, type: 'application/x-mpegURL' });
+      if (!live && playing) player.reset();
+      playing = live;
+      document.getElementById('stage').hidden = !live;
+      document.getElementById('wait').hidden = live;
+    }, 3000);
+
+    // Ruční kvalita: povolit jen vybranou výšku (Auto = všechny, rozhodne přehrávač)
+    document.getElementById('q').onchange = (e) => {
+      const levels = player.qualityLevels();
+      for (let i = 0; i < levels.length; i++) {
+        levels[i].enabled = e.target.value === '0' || levels[i].height == e.target.value;
+      }
+    };
+  </script>
 </body>
-
 </html>
